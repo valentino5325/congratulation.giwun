@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#142b45">
+  <title>우리대학교 | 합격자 조회</title>
+  <style>
+    :root { color-scheme: light; --navy:#142b45; --ink:#1c2b3b; --muted:#536273; --line:#dce2e9; --paper:#fff; --red:#9c3038; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f1f4f7; color:var(--ink); font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif; line-height:1.65; font-size:16px; }
+    [hidden] { display:none !important; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    :focus-visible { outline:3px solid #3171ad; outline-offset:4px; }
+    header { background:var(--navy); color:white; border-top:5px solid #b59a60; }
+    .header-inner { max-width:1040px; margin:auto; padding:24px 32px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .brand { font-size:1.5rem; font-weight:800; letter-spacing:-.04em; }
+    .header-label { font-size:.875rem; color:#d0dbe6; }
+    main { max-width:840px; padding:48px 24px 64px; margin:auto; }
+    .eyebrow { font-size:.875rem; color:var(--muted); letter-spacing:.14em; margin:0 0 8px; }
+    h1 { font-size:clamp(1.8rem,5vw,2.6rem); letter-spacing:-.055em; line-height:1.3; margin:0 0 12px; }
+    .intro { color:var(--muted); margin:0 0 32px; }
+    .card { background:var(--paper); border:1px solid var(--line); border-top:3px solid var(--navy); box-shadow:0 10px 35px #142b4506; }
+    .card-heading { padding:20px 28px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    h2 { font-size:1.125rem; margin:0; }
+    .required-note { font-size:.875rem; color:var(--muted); }
+    form { padding:28px; }
+    label { display:block; font-size:.9375rem; font-weight:700; margin-bottom:8px; }
+    .name-field { margin-bottom:28px; }
+    input { border:1px solid #aebbc8; border-radius:3px; background:white; padding:12px 14px; width:100%; min-width:0; color:var(--ink); }
+    input::placeholder { color:#6a7785; }
+    fieldset { margin:0; padding:0; border:0; min-width:0; }
+    legend { font-size:.9375rem; font-weight:700; margin-bottom:14px; padding:0; }
+    .scores { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .scores label { color:var(--muted); font-weight:400; }
+    .input-unit { position:relative; }
+    .input-unit input { padding-right:40px; }
+    .input-unit span { position:absolute; right:14px; top:13px; color:var(--muted); pointer-events:none; }
+    .hint { font-size:.875rem; color:var(--muted); margin:14px 0 24px; }
+    .primary,.secondary { width:100%; min-height:52px; border-radius:3px; font-weight:700; padding:12px 18px; }
+    .primary { background:var(--navy); color:white; border:1px solid var(--navy); }
+    .primary:hover { background:#224567; }
+    .secondary { background:white; color:var(--navy); border:1px solid #aebbc8; margin-top:24px; }
+    .secondary:hover { background:#f4f6f8; }
+    .notice { margin-top:24px; border-left:3px solid #bcc8d5; padding-left:16px; font-size:.875rem; color:var(--muted); }
+    .notice p { margin:4px 0; }
+    footer { text-align:center; padding:0 20px 30px; color:var(--muted); font-size:.875rem; }
+    .result-card { padding:36px 32px; text-align:center; }
+    .result-label { font-size:.875rem; color:var(--muted); letter-spacing:.16em; margin:0 0 12px; }
+    .result-title { font-family:"Noto Serif KR","Batang",serif; font-size:clamp(2rem,6vw,3rem); line-height:1.45; margin:0 0 20px; letter-spacing:.08em; }
+    .applicant { font-size:1.25rem; font-weight:700; margin:16px 0 8px; overflow-wrap:anywhere; }
+    .result-description { color:var(--muted); margin:0 0 28px; }
+    .score-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:20px 0; margin:0; gap:12px; }
+    .score-summary dt { font-size:.875rem; color:var(--muted); }
+    .score-summary dd { margin:6px 0 0; font-size:1.25rem; font-weight:700; }
+    .average { display:flex; justify-content:space-between; align-items:baseline; gap:16px; background:#f0f4f8; padding:18px 20px; margin-top:16px; text-align:left; }
+    .average strong { font-size:1.6rem; white-space:nowrap; }
+    .decision { display:inline-block; font-size:1.125rem; font-weight:800; color:var(--red); border:2px solid var(--red); padding:4px 24px; margin:28px 0 12px; letter-spacing:.12em; }
+    .decision.failed { color:var(--muted); border-color:var(--muted); }
+    .celebration { margin-top:32px; padding-top:28px; border-top:1px solid var(--line); }
+    .celebration h3 { font-size:clamp(1.5rem,5vw,2rem); letter-spacing:-.04em; margin:0 0 16px; }
+    .message { white-space:pre-line; word-break:keep-all; overflow-wrap:anywhere; color:#435367; margin:0; }
+    .signature { font-size:.9375rem; font-weight:700; margin:24px 0 0; }
+    .photos { display:grid; gap:18px; margin-bottom:24px; }
+    .photos figure { margin:0; }
+    .photos img { display:block; width:100%; height:auto; max-height:640px; object-fit:contain; background:#f1f4f7; }
+    .photos figcaption { font-size:.875rem; color:var(--muted); margin-top:8px; }
+    .photo-error { color:var(--muted); font-size:.875rem; }
+    .confetti { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:5; }
+    .confetti i { position:absolute; top:-20px; width:7px; height:13px; animation:fall 3.8s ease-in forwards; }
+    @keyframes fall { to { transform:translateY(110vh) rotate(620deg); } }
+    @media (prefers-reduced-motion:reduce) { .confetti { display:none; } }
+    @media (max-width:560px) {
+      .header-inner { padding:19px 20px; } .brand { font-size:1.25rem; }
+      main { padding:32px 16px 40px; } .card-heading { padding:18px 20px; }
+      form,.result-card { padding:24px 20px; } .scores { grid-template-columns:1fr; gap:18px; }
+      .score-summary { gap:6px; } .score-summary dt { font-size:.875rem; } .score-summary dd { font-size:1.125rem; }
+      .header-label { max-width:7em; text-align:right; } .average { padding:16px; }
+    }
+  </style>
+</head>
+<body>
+  <header><div class="header-inner"><div class="brand" data-university>우리대학교</div><div class="header-label">입학처 · 합격자 조회</div></div></header>
+  <main>
+    <section id="lookup" aria-labelledby="lookup-title">
+      <p class="eyebrow">ADMISSIONS</p>
+      <h1 id="lookup-title">최종 합격자 조회</h1>
+      <p class="intro">지원자 이름과 전형별 점수를 입력해 주세요.</p>
+      <div class="card">
+        <div class="card-heading"><h2>지원자 정보</h2><span class="required-note">모든 항목 필수</span></div>
+        <form id="lookup-form">
+          <div class="name-field"><label for="applicant-name">이름</label><input id="applicant-name" name="name" type="text" placeholder="이름을 입력해 주세요" autocomplete="off" maxlength="40" required></div>
+          <fieldset aria-describedby="score-hint"><legend>전형별 시험 점수</legend><div class="scores">
+            <div><label for="practical">실기시험</label><div class="input-unit"><input id="practical" name="practical" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="0–100" required><span aria-hidden="true">점</span></div></div>
+            <div><label for="essay">논술시험</label><div class="input-unit"><input id="essay" name="essay" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="0–100" required><span aria-hidden="true">점</span></div></div>
+            <div><label for="interview">면접시험</label><div class="input-unit"><input id="interview" name="interview" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="0–100" required><span aria-hidden="true">점</span></div></div>
+          </div></fieldset>
+          <p class="hint" id="score-hint">각 시험은 100점 만점이며, 세 시험의 평균 80점 이상이면 합격입니다.</p>
+          <button class="primary" type="submit">합격 여부 확인</button>
+        </form>
+      </div>
+      <div class="notice"><p>점수는 소수점 둘째 자리까지 입력할 수 있습니다.</p><p>입력한 이름과 점수는 서버에 저장되지 않습니다.</p></div>
+      <noscript><p>합격 여부를 확인하려면 브라우저에서 JavaScript를 활성화해 주세요.</p></noscript>
+    </section>
+    <section id="result" hidden aria-labelledby="result-title">
+      <div class="card result-card">
+        <p class="result-label">ADMISSION RESULT</p>
+        <h1 class="result-title" id="result-title" tabindex="-1">합격자 조회 결과</h1>
+        <p class="applicant" id="result-name"></p>
+        <p class="result-description" id="result-description"></p>
+        <dl class="score-summary"><div><dt>실기시험</dt><dd id="practical-result"></dd></div><div><dt>논술시험</dt><dd id="essay-result"></dd></div><div><dt>면접시험</dt><dd id="interview-result"></dd></div></dl>
+        <div class="average"><span>최종 평균 점수</span><strong id="average-result"></strong></div>
+        <p class="decision" id="decision"></p>
+        <div class="celebration" id="celebration" hidden>
+          <h3 id="birthday-title"></h3>
+          <div class="photos" id="photos" hidden></div>
+          <p class="message" id="birthday-message"></p>
+          <p class="signature" id="signature"></p>
+        </div>
+        <button type="button" class="secondary" id="back-button">다시 조회하기</button>
+      </div>
+    </section>
+  </main>
+  <footer><span data-university>우리대학교</span> 입학처 · 이벤트용 페이지</footer>
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <script>
+    'use strict';
+    // 실제 이름, 대학교 이름, 축하 문구와 사진은 이 설정에서 변경합니다.
+    // 사진 예시: { src: './photos/together.jpg', alt: '함께 찍은 사진', caption: '' }
+    const SITE_CONFIG = {
+      university: '우리대학교',
+      birthdayMessage: '오늘의 진짜 합격 소식은 바로 너의 생일!\n함께한 모든 순간처럼, 앞으로의 날들도 즐겁게 채워 가자.\n우리 모두의 마음을 모아 생일을 축하해!',
+      signature: '함께하는 동기들 일동',
+      photos: []
+    };
+    const $ = (id) => document.getElementById(id);
+    const scoreIds = ['practical', 'essay', 'interview'];
+    let confettiTimer;
+    function evaluateScores(values) {
+      if (values.length !== 3 || values.some(value => typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 100)) {
+        throw new RangeError('세 점수 모두 0점 이상 100점 이하로 입력해 주세요.');
+      }
+      // 0.01점 단위의 정수로 판정해 표시 반올림이 합격 여부에 영향을 주지 않게 합니다.
+      const totalHundredths = values.reduce((sum, value) => sum + Math.round(value * 100), 0);
+      return { average: totalHundredths / 300, passed: totalHundredths >= 24000 };
+    }
+    function clearConfetti() { clearTimeout(confettiTimer); $('confetti').replaceChildren(); }
+    function celebrate() {
+      clearConfetti();
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const colors = ['#b59a60', '#9c3038', '#31608c', '#d8b553'];
+      for (let i = 0; i < 45; i++) {
+        const piece = document.createElement('i');
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.backgroundColor = colors[i % colors.length];
+        piece.style.animationDelay = `${Math.random() * 0.7}s`;
+        $('confetti').append(piece);
+      }
+      confettiTimer = setTimeout(clearConfetti, 4600);
+    }
+    function renderPhotos() {
+      $('photos').replaceChildren();
+      $('photos').hidden = SITE_CONFIG.photos.length === 0;
+      SITE_CONFIG.photos.forEach(photo => {
+        const figure = document.createElement('figure');
+        const img = document.createElement('img');
+        img.alt = photo.alt || '함께 찍은 사진';
+        img.decoding = 'async';
+        img.addEventListener('error', () => {
+          const message = document.createElement('p');
+          message.className = 'photo-error';
+          message.textContent = '사진을 불러오지 못했어요. 잠시 후 다시 조회해 주세요.';
+          figure.replaceChildren(message);
+        }, { once: true });
+        img.src = photo.src;
+        figure.append(img);
+        if (photo.caption) {
+          const caption = document.createElement('figcaption');
+          caption.textContent = photo.caption;
+          figure.append(caption);
+        }
+        $('photos').append(figure);
+      });
+    }
+    document.querySelectorAll('[data-university]').forEach(el => { el.textContent = SITE_CONFIG.university; });
+    document.title = `${SITE_CONFIG.university} | 합격자 조회`;
+    $('applicant-name').addEventListener('input', () => $('applicant-name').setCustomValidity(''));
+    $('lookup-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const name = $('applicant-name').value.trim();
+      $('applicant-name').setCustomValidity(name ? '' : '이름을 입력해 주세요.');
+      if (!$('lookup-form').reportValidity()) return;
+      const values = scoreIds.map(id => $(id).valueAsNumber);
+      const { average, passed } = evaluateScores(values);
+      $('result-name').textContent = `${name} 님`;
+      $('result-description').textContent = passed ? '최종 합격을 진심으로 축하합니다.' : '아쉽게도 이번 전형의 합격 기준에 도달하지 못했습니다.';
+      scoreIds.forEach((id, i) => { $(`${id}-result`).textContent = `${values[i]}점`; });
+      $('average-result').textContent = `${average.toFixed(2)}점`;
+      $('decision').textContent = passed ? '최종 합격' : '불합격';
+      $('decision').classList.toggle('failed', !passed);
+      $('celebration').hidden = !passed;
+      $('birthday-title').textContent = '';
+      $('birthday-message').textContent = '';
+      $('signature').textContent = '';
+      $('photos').replaceChildren();
+      if (passed) {
+        $('birthday-title').textContent = `${name} 님, 생일 축하해요!`;
+        $('birthday-message').textContent = SITE_CONFIG.birthdayMessage;
+        $('signature').textContent = SITE_CONFIG.signature;
+        renderPhotos();
+        celebrate();
+      } else { clearConfetti(); }
+      $('lookup').hidden = true;
+      $('result').hidden = false;
+      $('result-title').focus({ preventScroll:true });
+      window.scrollTo({ top:0, behavior:'instant' });
+    });
+    $('back-button').addEventListener('click', () => {
+      clearConfetti();
+      $('result').hidden = true;
+      $('lookup').hidden = false;
+      $('applicant-name').focus({ preventScroll:true });
+      window.scrollTo({ top:0, behavior:'instant' });
+    });
+  </script>
+</body>
+</html>
