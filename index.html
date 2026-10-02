@@ -134,11 +134,11 @@
     // 사진 예시: { src: './photos/together.jpg', alt: '함께 찍은 사진', caption: '' }
     const SITE_CONFIG = {
       university: '마장대학교',
-      birthdayMessage: '진짜 합격 소식은 바로 당신의 생일\n함께한 모든 순간처럼, 앞으로의 날들도 즐겁게 채워 가시죠.\n모두의 마음을 모아 생일을 축하드립니다!',
+      birthdayMessage: '김기운 학생 최종합격을 축하드립니다.\n기를쓰고 실기 전형에 임했겠죠?\n운이 좋으셨네요. 합격입니다ㅋ 근데 졸업 불가임.',
       signature: '시그마 일동',
       photos: [
-        { src: './photos/admission-celebration.webp', alt: '다섯 명이 함께한 마장대학교 합격 축하 사진', caption: '합격을 진심으로 축하합니다!', width: 1920, height: 1080 },
-        { src: './photos/final-admission-certificate.webp', alt: '김기운 님의 마장대학교 최종 합격증서', caption: '최종 합격증서', width: 1024, height: 1536 }
+        { src: './photos/admission-celebration.webp', alt: '다섯 명이 함께한 마장대학교 합격 축하 사진', width: 1920, height: 1080 },
+        { src: './photos/final-admission-certificate.webp', alt: '김기운 님의 마장대학교 최종 합격증서', width: 1024, height: 1536 }
       ]
     };
     const $ = (id) => document.getElementById(id);
@@ -192,7 +192,7 @@
         figure.append(link);
         if (photo.caption) {
           const caption = document.createElement('figcaption');
-          caption.textContent = photo.caption + ' · 이미지를 누르면 크게 볼 수 있어요.';
+          caption.textContent = photo.caption;
           figure.append(caption);
         }
         $('photos').append(figure);
