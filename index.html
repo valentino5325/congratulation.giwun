@@ -65,7 +65,7 @@
     .signature { font-size:.9375rem; font-weight:700; margin:24px 0 0; }
     .photos { display:grid; gap:18px; margin-bottom:24px; }
     .photos figure { margin:0; }
-    .photos img { display:block; width:100%; height:auto; max-height:640px; object-fit:contain; background:#f1f4f7; }
+    .photos img { display:block; width:100%; height:auto; object-fit:contain; background:#f1f4f7; }
     .photos figcaption { font-size:.875rem; color:var(--muted); margin-top:8px; }
     .photo-error { color:var(--muted); font-size:.875rem; }
     .confetti { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:5; }
@@ -82,7 +82,7 @@
   </style>
 </head>
 <body>
-  <header><div class="header-inner"><div class="brand" data-university>우리대학교</div><div class="header-label">입학처 · 합격자 조회</div></div></header>
+  <header><div class="header-inner"><div class="brand" data-university>마장대학교</div><div class="header-label">입학처 · 합격자 조회</div></div></header>
   <main>
     <section id="lookup" aria-labelledby="lookup-title">
       <p class="eyebrow">ADMISSIONS</p>
@@ -133,7 +133,10 @@
       university: '마장대학교',
       birthdayMessage: '진짜 합격 소식은 바로 당신의 생일\n함께한 모든 순간처럼, 앞으로의 날들도 즐겁게 채워 가시죠.\n모두의 마음을 모아 생일을 축하드립니다!',
       signature: '시그마 일동',
-      photos: []
+      photos: [
+        { src: './photos/admission-celebration.webp', alt: '다섯 명이 함께한 마장대학교 합격 축하 사진', caption: '합격을 진심으로 축하합니다!', width: 1920, height: 1080 },
+        { src: './photos/final-admission-certificate.webp', alt: '김기운 님의 마장대학교 최종 합격증서', caption: '최종 합격증서', width: 1024, height: 1536 }
+      ]
     };
     const $ = (id) => document.getElementById(id);
     const scoreIds = ['practical', 'essay', 'interview'];
@@ -168,6 +171,8 @@
         const img = document.createElement('img');
         img.alt = photo.alt || '함께 찍은 사진';
         img.decoding = 'async';
+        img.width = photo.width;
+        img.height = photo.height;
         img.addEventListener('error', () => {
           const message = document.createElement('p');
           message.className = 'photo-error';
@@ -175,10 +180,16 @@
           figure.replaceChildren(message);
         }, { once: true });
         img.src = photo.src;
-        figure.append(img);
+        const link = document.createElement('a');
+        link.href = photo.src;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.setAttribute('aria-label', photo.alt + ' — 원본 크게 보기 (새 창)');
+        link.append(img);
+        figure.append(link);
         if (photo.caption) {
           const caption = document.createElement('figcaption');
-          caption.textContent = photo.caption;
+          caption.textContent = photo.caption + ' · 이미지를 누르면 크게 볼 수 있어요.';
           figure.append(caption);
         }
         $('photos').append(figure);
