@@ -59,8 +59,9 @@
     .average strong { font-size:1.6rem; white-space:nowrap; }
     .decision { display:inline-block; font-size:1.125rem; font-weight:800; color:var(--red); border:2px solid var(--red); padding:4px 24px; margin:28px 0 12px; letter-spacing:.12em; }
     .decision.failed { color:var(--muted); border-color:var(--muted); }
-    .celebration { margin-top:32px; padding-top:28px; border-top:1px solid var(--line); }
-    .celebration h3 { font-size:clamp(1.5rem,5vw,2rem); letter-spacing:-.04em; margin:0 0 16px; }
+    .celebration { margin-top:24px; }
+    .result-scores { margin-top:32px; }
+    .exam-number { color:var(--muted); overflow-wrap:anywhere; margin:0 0 16px; }
     .message { white-space:pre-line; word-break:keep-all; overflow-wrap:anywhere; color:#435367; margin:0; }
     .signature { font-size:.9375rem; font-weight:700; margin:24px 0 0; }
     .photos { display:grid; gap:18px; margin-bottom:24px; }
@@ -87,11 +88,12 @@
     <section id="lookup" aria-labelledby="lookup-title">
       <p class="eyebrow">ADMISSIONS</p>
       <h1 id="lookup-title">최종 합격자 조회</h1>
-      <p class="intro">지원자 이름과 전형별 점수를 입력해 주세요.</p>
+      <p class="intro">지원자 이름, 수험번호와 전형별 점수를 입력해 주세요.</p>
       <div class="card">
         <div class="card-heading"><h2>지원자 정보</h2><span class="required-note">모든 항목 필수</span></div>
         <form id="lookup-form">
           <div class="name-field"><label for="applicant-name">이름</label><input id="applicant-name" name="name" type="text" placeholder="이름을 입력해 주세요" autocomplete="off" maxlength="40" required></div>
+          <div class="name-field"><label for="applicant-number">수험번호</label><input id="applicant-number" name="applicantNumber" type="text" placeholder="수험번호를 입력해 주세요" autocomplete="off" maxlength="40" required></div>
           <fieldset aria-describedby="score-hint"><legend>전형별 시험 점수</legend><div class="scores">
             <div><label for="practical">실기시험</label><div class="input-unit"><input id="practical" name="practical" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="0–100" required><span aria-hidden="true">점</span></div></div>
             <div><label for="essay">논술시험</label><div class="input-unit"><input id="essay" name="essay" type="number" inputmode="decimal" min="0" max="100" step="0.01" placeholder="0–100" required><span aria-hidden="true">점</span></div></div>
@@ -101,7 +103,7 @@
           <button class="primary" type="submit">합격 여부 확인</button>
         </form>
       </div>
-      <div class="notice"><p>점수는 소수점 둘째 자리까지 입력할 수 있습니다.</p><p>입력한 이름과 점수는 서버에 저장되지 않습니다.</p></div>
+      <div class="notice"><p>점수는 소수점 둘째 자리까지 입력할 수 있습니다.</p><p>입력한 이름, 수험번호와 점수는 서버에 저장되지 않습니다.</p></div>
       <noscript><p>합격 여부를 확인하려면 브라우저에서 JavaScript를 활성화해 주세요.</p></noscript>
     </section>
     <section id="result" hidden aria-labelledby="result-title">
@@ -109,16 +111,17 @@
         <p class="result-label">ADMISSION RESULT</p>
         <h1 class="result-title" id="result-title" tabindex="-1">합격자 조회 결과</h1>
         <p class="applicant" id="result-name"></p>
-        <p class="result-description" id="result-description"></p>
-        <dl class="score-summary"><div><dt>실기시험</dt><dd id="practical-result"></dd></div><div><dt>논술시험</dt><dd id="essay-result"></dd></div><div><dt>면접시험</dt><dd id="interview-result"></dd></div></dl>
-        <div class="average"><span>최종 평균 점수</span><strong id="average-result"></strong></div>
-        <p class="decision" id="decision"></p>
         <div class="celebration" id="celebration" hidden>
-          <h3 id="birthday-title"></h3>
           <div class="photos" id="photos" hidden></div>
           <p class="message" id="birthday-message"></p>
           <p class="signature" id="signature"></p>
         </div>
+        <section class="result-scores" aria-label="전형별 성적">
+          <p class="decision" id="decision"></p>
+          <p class="exam-number" id="result-number"></p>
+          <dl class="score-summary"><div><dt>실기시험</dt><dd id="practical-result"></dd></div><div><dt>논술시험</dt><dd id="essay-result"></dd></div><div><dt>면접시험</dt><dd id="interview-result"></dd></div></dl>
+          <div class="average"><span>최종 평균 점수</span><strong id="average-result"></strong></div>
+        </section>
         <button type="button" class="secondary" id="back-button">다시 조회하기</button>
       </div>
     </section>
@@ -197,27 +200,31 @@
     }
     document.querySelectorAll('[data-university]').forEach(el => { el.textContent = SITE_CONFIG.university; });
     document.title = `${SITE_CONFIG.university} | 합격자 조회`;
-    $('applicant-name').addEventListener('input', () => $('applicant-name').setCustomValidity(''));
+    ['applicant-name', 'applicant-number'].forEach(id => {
+      $(id).addEventListener('input', () => $(id).setCustomValidity(''));
+    });
     $('lookup-form').addEventListener('submit', event => {
       event.preventDefault();
       const name = $('applicant-name').value.trim();
+      const applicantNumber = $('applicant-number').value.trim();
       $('applicant-name').setCustomValidity(name ? '' : '이름을 입력해 주세요.');
+      $('applicant-number').setCustomValidity(applicantNumber ? '' : '수험번호를 입력해 주세요.');
       if (!$('lookup-form').reportValidity()) return;
       const values = scoreIds.map(id => $(id).valueAsNumber);
       const { average, passed } = evaluateScores(values);
-      $('result-name').textContent = `${name} 님`;
-      $('result-description').textContent = passed ? '최종 합격을 진심으로 축하합니다.' : '아쉽게도 이번 전형의 합격 기준에 도달하지 못했습니다.';
+      $('result-name').textContent = passed
+        ? `${name} 님 최종 합격을 진심으로 축하합니다.`
+        : `${name} 님, 아쉽게도 이번 전형의 합격 기준에 도달하지 못했습니다.`;
+      $('result-number').textContent = `수험번호 ${applicantNumber}`;
       scoreIds.forEach((id, i) => { $(`${id}-result`).textContent = `${values[i]}점`; });
       $('average-result').textContent = `${average.toFixed(2)}점`;
       $('decision').textContent = passed ? '최종 합격' : '불합격';
       $('decision').classList.toggle('failed', !passed);
       $('celebration').hidden = !passed;
-      $('birthday-title').textContent = '';
       $('birthday-message').textContent = '';
       $('signature').textContent = '';
       $('photos').replaceChildren();
       if (passed) {
-        $('birthday-title').textContent = `${name} 님, 생일 축하해요!`;
         $('birthday-message').textContent = SITE_CONFIG.birthdayMessage;
         $('signature').textContent = SITE_CONFIG.signature;
         renderPhotos();
