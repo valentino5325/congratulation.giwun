@@ -32,6 +32,7 @@
     .required-note { font-size:.875rem; color:var(--muted); }
     form { padding:28px; }
     label { display:block; font-size:.9375rem; font-weight:700; margin-bottom:8px; }
+    .required-mark { color:#c62828; margin-left:4px; font-weight:700; }
     .name-field { margin-bottom:28px; }
     input { border:1px solid #aebbc8; border-radius:3px; background:white; padding:12px 14px; width:100%; min-width:0; color:var(--ink); }
     input::placeholder { color:#6a7785; }
@@ -66,7 +67,7 @@
     .celebration { margin-top:24px; }
     .result-scores { margin-top:32px; }
     .exam-number { color:var(--muted); overflow-wrap:anywhere; margin:0 0 16px; }
-    .message { white-space:pre-line; word-break:keep-all; overflow-wrap:anywhere; color:#435367; margin:0; }
+    .message { width:fit-content; max-width:100%; text-align:left; white-space:pre-line; word-break:keep-all; overflow-wrap:anywhere; color:#435367; margin:0 auto; }
     .signature { font-size:.9375rem; font-weight:700; margin:24px 0 0; }
     .photos { display:grid; gap:18px; margin-bottom:24px; }
     .photos figure { margin:0; }
@@ -96,11 +97,11 @@
       <div class="card">
         <div class="card-heading"><h2>지원자 정보</h2><span class="required-note">모든 항목 필수</span></div>
         <form id="lookup-form" novalidate>
-          <div class="name-field"><label for="applicant-name">이름</label><input id="applicant-name" name="name" type="text" placeholder="이름을 입력해 주세요" autocomplete="off" maxlength="40" required></div>
-          <div class="name-field"><label for="applicant-number">수험번호</label><input id="applicant-number" name="applicantNumber" type="text" placeholder="수험번호를 입력해 주세요" autocomplete="off" maxlength="40" required></div>
+          <div class="name-field"><label for="applicant-name">이름<span class="required-mark" aria-hidden="true">*</span></label><input id="applicant-name" name="name" type="text" placeholder="이름을 입력해 주세요" autocomplete="off" maxlength="40" required></div>
+          <div class="name-field"><label for="applicant-number">수험번호<span class="required-mark" aria-hidden="true">*</span></label><input id="applicant-number" name="applicantNumber" type="text" placeholder="수험번호를 입력해 주세요" autocomplete="off" maxlength="40" required></div>
           <fieldset style="margin-bottom:24px"><legend>전형별 시험 점수</legend><div class="scores">
-            <div><label for="practical">1차(실기)</label><div class="input-unit"><input id="practical" name="practical" type="number" inputmode="decimal" min="0" max="50" step="0.01" placeholder="점수 입력" required><span aria-hidden="true">점</span></div></div>
-            <div><label for="interview">2차(면접)</label><div class="input-unit"><input id="interview" name="interview" type="number" inputmode="decimal" min="0" max="50" step="0.01" placeholder="점수 입력" required><span aria-hidden="true">점</span></div></div>
+            <div><label for="practical">1차(실기)<span class="required-mark" aria-hidden="true">*</span></label><div class="input-unit"><input id="practical" name="practical" type="number" inputmode="decimal" min="0" max="50" step="0.01" placeholder="점수 입력" required><span aria-hidden="true">점</span></div></div>
+            <div><label for="interview">2차(면접)<span class="required-mark" aria-hidden="true">*</span></label><div class="input-unit"><input id="interview" name="interview" type="number" inputmode="decimal" min="0" max="50" step="0.01" placeholder="점수 입력" required><span aria-hidden="true">점</span></div></div>
           </div></fieldset>
           <button class="primary" type="submit">합격 여부 확인</button>
         </form>
@@ -148,7 +149,7 @@
       opensAt: '2026-10-02T19:30:00+09:00',
       applicant: { name: '김기운', number: '23-0001' },
       previewKey: { name: '김동호', number: '0000' },
-      birthdayMessage: '김기운 학생 최종합격을 축하드립니다.\n기를쓰고 실기 전형에 임했겠죠?\n운이 좋으셨네요. 합격입니다ㅋ 근데 졸업 불가임.',
+      birthdayMessage: '김기운 학생 최종합격을 축하드립니다.\n기를쓰고 실기 전형에 임했겠죠?\n운이 좋으셨네요. 합격입니다ㅋ 근데 졸업 불가임ㅋㅋㅋ',
       signature: '시그마 일동',
       photos: [
         { src: './photos/admission-welcome.webp', alt: '김기운 님의 합격 축하 이미지', width: 2048, height: 1411 },
