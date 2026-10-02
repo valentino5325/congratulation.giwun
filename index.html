@@ -22,6 +22,9 @@
     main { max-width:840px; padding:48px 24px 64px; margin:auto; }
     .eyebrow { font-size:.875rem; color:var(--muted); letter-spacing:.14em; margin:0 0 8px; }
     h1 { font-size:clamp(1.8rem,5vw,2.6rem); letter-spacing:-.055em; line-height:1.3; margin:0 0 12px; }
+    .lookup-heading { display:flex; flex-wrap:wrap; align-items:center; gap:12px 20px; margin-bottom:12px; }
+    .lookup-heading h1 { margin:0; }
+    .lookup-countdown { display:inline-block; margin:0; padding:6px 12px; border:1px solid var(--line); border-radius:4px; background:white; color:var(--navy); font-size:.9375rem; font-weight:700; font-variant-numeric:tabular-nums; }
     .intro { color:var(--muted); margin:0 0 32px; }
     .card { background:var(--paper); border:1px solid var(--line); border-top:3px solid var(--navy); box-shadow:0 10px 35px #142b4506; }
     .card-heading { padding:20px 28px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:16px; }
@@ -88,7 +91,7 @@
   <main>
     <section id="lookup" aria-labelledby="lookup-title">
       <p class="eyebrow">ADMISSIONS</p>
-      <h1 id="lookup-title">최종 합격자 조회</h1>
+      <div class="lookup-heading"><h1 id="lookup-title">최종 합격자 조회</h1><p id="lookup-countdown" class="lookup-countdown" role="timer" aria-live="off"></p></div>
       <p class="intro">지원자 이름, 수험번호와 전형별 점수를 입력해 주세요.</p>
       <div class="card">
         <div class="card-heading"><h2>지원자 정보</h2><span class="required-note">모든 항목 필수</span></div>
@@ -144,6 +147,7 @@
       university: '마장대학교',
       opensAt: '2026-10-02T19:30:00+09:00',
       applicant: { name: '김기운', number: '23-0001' },
+      previewKey: { name: '김동호', number: '0000' },
       birthdayMessage: '김기운 학생 최종합격을 축하드립니다.\n기를쓰고 실기 전형에 임했겠죠?\n운이 좋으셨네요. 합격입니다ㅋ 근데 졸업 불가임.',
       signature: '시그마 일동',
       photos: [
@@ -217,9 +221,25 @@
     const OPEN_TIME = Date.parse(SITE_CONFIG.opensAt);
     let countdownTimer;
     function lookupStatus(name, number, now = Date.now()) {
+      if (name === SITE_CONFIG.previewKey.name && number === SITE_CONFIG.previewKey.number) return 'preview';
       if (now < OPEN_TIME) return 'closed';
       return name === SITE_CONFIG.applicant.name && number === SITE_CONFIG.applicant.number ? 'found' : 'not-found';
     }
+    let lookupCountdownTimer;
+    function updateLookupCountdown() {
+      const seconds = Math.max(0, Math.ceil((OPEN_TIME - Date.now()) / 1000));
+      if (seconds === 0) {
+        $('lookup-countdown').textContent = '조회 가능';
+        clearInterval(lookupCountdownTimer);
+        return;
+      }
+      const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const minutes = String(Math.floor(seconds % 3600 / 60)).padStart(2, '0');
+      const rest = String(seconds % 60).padStart(2, '0');
+      $('lookup-countdown').textContent = `조회 시작까지 ${hours}:${minutes}:${rest}`;
+    }
+    updateLookupCountdown();
+    if (Date.now() < OPEN_TIME) lookupCountdownTimer = setInterval(updateLookupCountdown, 1000);
     function switchView(id) {
       ['lookup', 'result', 'lookup-notice'].forEach(view => { $(view).hidden = view !== id; });
       window.scrollTo({ top:0, behavior:'instant' });
@@ -266,14 +286,17 @@
       $('applicant-number').setCustomValidity(applicantNumber ? '' : '수험번호를 입력해 주세요.');
       if (!$('applicant-name').reportValidity() || !$('applicant-number').reportValidity()) return;
       if (status === 'not-found') { showNotice('not-found'); return; }
-      if (!$('lookup-form').reportValidity()) return;
+      const isPreview = status === 'preview';
+      if (!isPreview && !$('lookup-form').reportValidity()) return;
       clearInterval(countdownTimer);
-      const values = scoreIds.map(id => $(id).valueAsNumber);
+      const values = isPreview ? [50, 50] : scoreIds.map(id => $(id).valueAsNumber);
+      const displayName = isPreview ? SITE_CONFIG.applicant.name : name;
+      const displayNumber = isPreview ? SITE_CONFIG.applicant.number : applicantNumber;
       const { total, passed } = evaluateScores(values);
       $('result-name').textContent = passed
-        ? `${name} 님 최종 합격을 진심으로 축하합니다.`
-        : `${name} 님, 아쉽게도 이번 전형에 합격하지 못했습니다.`;
-      $('result-number').textContent = `수험번호 ${applicantNumber}`;
+        ? `${displayName} 님 최종 합격을 진심으로 축하합니다.`
+        : `${displayName} 님, 아쉽게도 이번 전형에 합격하지 못했습니다.`;
+      $('result-number').textContent = `수험번호 ${displayNumber}`;
       scoreIds.forEach((id, i) => { $(`${id}-result`).textContent = `${values[i]}점`; });
       $('total-result').textContent = `${total.toFixed(2)}점`;
       $('decision').textContent = passed ? '최종 합격' : '불합격';
